@@ -1,6 +1,7 @@
-using System.Collections.Generic;
+using System;
 using TMPro;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace GameOfLife.Grid
 {
@@ -9,12 +10,18 @@ namespace GameOfLife.Grid
         [SerializeField] Color aliveColor = Color.black;
         [SerializeField] Color dethColor = Color.white;
         [SerializeField] Color hoverColor = Color.gray;
+
         TextMeshProUGUI positionText;
         SpriteRenderer spriteRenderer;
+
+        public event Action<int> StateChange;
+
+        List<int> neighbors = new List<int>();
         Color currentColor;
         bool isAlive;
         int id = -1;
-
+        
+        
         public int Id
         {
             get { return id; }
@@ -22,6 +29,14 @@ namespace GameOfLife.Grid
             {
                 if (id != -1) return;
                 id = value; 
+            }
+        }
+
+        public List<int> Neighbors
+        {
+            get 
+            { 
+                return  neighbors;
             }
         }
 
@@ -49,10 +64,21 @@ namespace GameOfLife.Grid
 
         private void OnMouseDown()
         {
+            ChangeState();
+            positionText.text = id.ToString();
+        }
+
+        public void ChangeState()
+        {
             isAlive = !isAlive;
             currentColor = isAlive ? aliveColor : dethColor;
             spriteRenderer.color = currentColor;
-            positionText.text = transform.position.ToString();
+            StateChange(id);
+        }
+       
+        public bool IsAlive()
+        {
+            return isAlive;
         }
     }
 }

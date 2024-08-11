@@ -7,6 +7,7 @@ namespace GameOfLife.Control
     {
         [SerializeField] float moveSpeed;
         InputManager inputManager;
+        GridSpawner gridSpawner;
         GridManager gridManager;
         Animator animator;
         float fractionSpeed;
@@ -14,6 +15,7 @@ namespace GameOfLife.Control
         private void Awake()
         {
             inputManager = GetComponent<InputManager>();
+            gridSpawner = FindObjectOfType<GridSpawner>();
             gridManager = FindObjectOfType<GridManager>();
             animator = GetComponent<Animator>();
         }
@@ -27,6 +29,13 @@ namespace GameOfLife.Control
         }
         private void Update()
         {
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                gridManager.CalculateNextGeneration();
+            }else if (Input.GetKeyDown(KeyCode.K))
+            {
+                gridManager.ReturnPreviousGeneration();
+            }
             Move();
         }
 
@@ -34,15 +43,15 @@ namespace GameOfLife.Control
         {
             if (inputManager.direction == Vector3.zero) return;
             Vector3 newPosition = transform.position + (fractionSpeed * Time.deltaTime * inputManager.direction);
-            newPosition.x = Mathf.Clamp(newPosition.x, gridManager.BottomLeft.x, gridManager.TopRight.x);
-            newPosition.y = Mathf.Clamp(newPosition.y, gridManager.BottomLeft.y, gridManager.TopRight.y);
+            newPosition.x = Mathf.Clamp(newPosition.x, gridSpawner.BottomLeft.x, gridSpawner.TopRight.x);
+            newPosition.y = Mathf.Clamp(newPosition.y, gridSpawner.BottomLeft.y, gridSpawner.TopRight.y);
             transform.position = newPosition;
         }
 
         private void Zoom(int indexChange)
         {
             if (indexChange == 0) return;
-            int cameras = gridManager.stateDrivenCamera.ChildCameras.Length;
+            int cameras = gridSpawner.stateDrivenCamera.ChildCameras.Length;
             int currentCameraIndex = animator.GetInteger("CameraIndex");
             currentCameraIndex = Mathf.Clamp(currentCameraIndex + indexChange, 0 ,cameras - 1);
             fractionSpeed = moveSpeed * ((cameras - currentCameraIndex) / (float) cameras);
@@ -51,7 +60,7 @@ namespace GameOfLife.Control
 
         private void SetStartPosition()
         {
-            transform.position = gridManager.GetGridCenter();
+            transform.position = gridSpawner.GetGridCenter();
         }
 
         private void OnDisable()

@@ -1,76 +1,123 @@
-using Cinemachine;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace GameOfLife.Grid
 {
     public class GridManager : MonoBehaviour
-    {
+    { 
+        public readonly int width = 160;
+        public readonly int height = 90;
+        public readonly float tileSize = 1f;
 
-        [SerializeField] Tile tile;
-        public CinemachineStateDrivenCamera stateDrivenCamera;
-
-        readonly int width = 160;
-        readonly int height = 90;
-        readonly float tileSize = 1f;
-      
-        PolygonCollider2D polygonCollider;
         List<Tile> grid = new List<Tile>();
+        HashSet<int> aliveTiles = new HashSet<int>();
+        List<int> changes = new List<int>();
+        Stack<List<int>> history = new Stack<List<int>>();
+        int currentGeneration;
 
-        Vector2 bottomLeft;
-        Vector2 topRight;
-
-        public Vector2 BottomLeft
+        private void Start()
         {
-            get { return bottomLeft;}
+            currentGeneration = 0;
+        }
+        public List<Tile> Grid
+        {
+            get { return grid;}
         }
 
-        public Vector2 TopRight
+        private void SaveAliveTiles(int id)
         {
-            get { return topRight;}
-        }
-
-
-        private void Awake()
-        {
-            polygonCollider = GetComponent<PolygonCollider2D>();
-        }
-        void Start()
-        {
-            GenerateGrid(width, height);
-            DefineWorldBounds();
-        }
-
-        private void GenerateGrid(int width, int height)
-        {
-            for (int x = 0; x < width; x ++)
+            if (grid[id].IsAlive())
             {
-                for (int y = 0; y < height; y ++)
-                {
-                    Vector2 coordinates = new Vector2(x, y);
-                    Tile newTile = Instantiate(tile, coordinates, Quaternion.identity);
-                    newTile.Id = x * height + y;
-                    newTile.transform.parent = transform;
-                    grid.Add(newTile);
-                }
+                print("You are alive Tile No.  " + id);
+                aliveTiles.Add(id);
+            }
+            else
+            {
+                aliveTiles.Remove(id);
+            }
+        } 
+        public void SubscribeToTiles()
+        {
+            foreach (Tile tile in grid)
+            {
+                tile.StateChange += SaveAliveTiles;
+            }
+        }
+        public void CalculateNextGeneration()
+        {
+            foreach(int tile in aliveTiles)
+            {
+                print(tile);
+                CheckNeighbors(tile, true);
+            }
+            ApplyCurrentChanges();
+            currentGeneration++;
+        }
+
+        public void ReturnPreviousGeneration()
+        {
+            if(history.Count > 0)
+            {
+                ApplyChanges(history.Pop());
+                changes.Clear();
+                currentGeneration--;
             }
         }
 
-        private void DefineWorldBounds()
+        private void CheckNeighbors(int id, bool checkNeighborsNextState)
         {
-            Vector3 offset = Vector3.one * tileSize;
-            bottomLeft = grid[0].transform.position - offset;
-            topRight = grid[^1].transform.position + offset;
-            Vector2[] points = { bottomLeft, new Vector2(bottomLeft.x, topRight.y), topRight, new Vector2(topRight.x, bottomLeft.y) };
-            polygonCollider.SetPath(0, points);
-            stateDrivenCamera.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = polygonCollider;
+            int livingNeighbors = 0;
+            foreach (int neighbor in grid[id].Neighbors)
+            {
+                if (grid[neighbor].IsAlive())
+                {
+                    livingNeighbors++;
+                }
+                else if(checkNeighborsNextState)
+                {
+                    CheckNeighbors(neighbor, false);
+                }
+            }
+            CheckNextState(id, livingNeighbors);
         }
 
-        public Vector2 GetGridCenter()
+        private void CheckNextState(int id, int livingNeighbors)
         {
-            float offset = tileSize / 2;
-            return new Vector2((width/2) - offset , (height/2) - offset); 
+            if (grid[id].IsAlive())
+            {
+                if (livingNeighbors < 2 || livingNeighbors > 3)
+                {
+                    changes.Add(id);
+                }
+            }
+            else if (livingNeighbors == 3)
+            {
+                    changes.Add(id);
+            }
         }
 
+        private void ApplyCurrentChanges()
+        {
+            history.Push(new List<int>(changes));
+            ApplyChanges(changes);
+            changes.Clear();
+        }
+
+        private void ApplyChanges(List<int> changesToApply)
+        {
+            foreach (int indexTile in changesToApply)
+            {
+                grid[indexTile].ChangeState();
+            }
+        }
+
+        private void OnDisable()
+        {
+            foreach (Tile tile in grid)
+            {
+                tile.StateChange -= SaveAliveTiles;
+            }
+        }
     }
 }
