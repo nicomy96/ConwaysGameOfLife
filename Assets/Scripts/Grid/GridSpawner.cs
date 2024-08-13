@@ -10,12 +10,10 @@ namespace GameOfLife.Grid
 
         [SerializeField] Tile tile;
         public CinemachineStateDrivenCamera stateDrivenCamera;
-
-        GridManager gridManager;
-        PolygonCollider2D polygonCollider;
-
         Vector2 bottomLeft;
         Vector2 topRight;
+        GridManager gridManager;
+        PolygonCollider2D polygonCollider;
 
         public Vector2 BottomLeft
         {
@@ -64,7 +62,6 @@ namespace GameOfLife.Grid
             polygonCollider.SetPath(0, points);
             stateDrivenCamera.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = polygonCollider;
         }
-
         public Vector2 GetGridCenter()
         {
             float offset = gridManager.tileSize / 2;

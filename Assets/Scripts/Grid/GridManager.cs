@@ -1,11 +1,16 @@
+using Cinemachine;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEditorInternal;
 using UnityEngine;
+using System;
 
 namespace GameOfLife.Grid
 {
     public class GridManager : MonoBehaviour
-    { 
+    {
+
+        [SerializeField] float delayNextGeneration;
         public readonly int width = 160;
         public readonly int height = 90;
         public readonly float tileSize = 1f;
@@ -15,6 +20,7 @@ namespace GameOfLife.Grid
         List<int> changes = new List<int>();
         Stack<List<int>> history = new Stack<List<int>>();
         int currentGeneration;
+        
 
         private void Start()
         {
@@ -29,7 +35,6 @@ namespace GameOfLife.Grid
         {
             if (grid[id].IsAlive())
             {
-                print("You are alive Tile No.  " + id);
                 aliveTiles.Add(id);
             }
             else
@@ -37,18 +42,24 @@ namespace GameOfLife.Grid
                 aliveTiles.Remove(id);
             }
         } 
+
+        private void RestartHistory()
+        {
+            history.Clear();
+            currentGeneration = 0;
+        }
         public void SubscribeToTiles()
         {
             foreach (Tile tile in grid)
             {
-                tile.StateChange += SaveAliveTiles;
+                tile.OnStateChange += SaveAliveTiles;
+                tile.OnManualStateChange += RestartHistory;
             }
         }
         public void CalculateNextGeneration()
         {
             foreach(int tile in aliveTiles)
             {
-                print(tile);
                 CheckNeighbors(tile, true);
             }
             ApplyCurrentChanges();
@@ -116,7 +127,41 @@ namespace GameOfLife.Grid
         {
             foreach (Tile tile in grid)
             {
-                tile.StateChange -= SaveAliveTiles;
+                tile.OnStateChange -= SaveAliveTiles;
+            }
+        }
+
+        public void PlayForward()
+        {
+            StartCoroutine(PlayForwardCoroutine());
+        }
+
+        public void PlayBackward()
+        {
+            StartCoroutine(PlayBackwardCoroutine());
+        }
+
+        public void StopPlaying()
+        {
+            StopAllCoroutines();
+        }
+        IEnumerator PlayForwardCoroutine()
+        {
+            while (aliveTiles.Count > 0)
+            {
+                CalculateNextGeneration();
+                yield return new WaitForSeconds(delayNextGeneration);
+            }
+        }
+
+        IEnumerator PlayBackwardCoroutine()
+        {   
+            while (history.Count > 0)
+            {
+                print(history.Count);
+                ReturnPreviousGeneration();
+                print(history.Count);
+                yield return new WaitForSeconds(delayNextGeneration);
             }
         }
     }

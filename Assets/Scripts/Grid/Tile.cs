@@ -14,7 +14,8 @@ namespace GameOfLife.Grid
         TextMeshProUGUI positionText;
         SpriteRenderer spriteRenderer;
 
-        public event Action<int> StateChange;
+        public event Action<int> OnStateChange;
+        public event Action OnManualStateChange;
 
         List<int> neighbors = new List<int>();
         Color currentColor;
@@ -65,6 +66,7 @@ namespace GameOfLife.Grid
         private void OnMouseDown()
         {
             ChangeState();
+            OnManualStateChange();
             positionText.text = id.ToString();
         }
 
@@ -73,7 +75,7 @@ namespace GameOfLife.Grid
             isAlive = !isAlive;
             currentColor = isAlive ? aliveColor : dethColor;
             spriteRenderer.color = currentColor;
-            StateChange(id);
+            OnStateChange(id);
         }
        
         public bool IsAlive()

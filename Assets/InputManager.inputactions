@@ -1,5 +1,5 @@
 {
-    "name": "GameOfLife",
+    "name": "InputManager",
     "maps": [
         {
             "name": "Player",
@@ -31,6 +31,42 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "AutoPlay",
+                    "type": "Button",
+                    "id": "39e388d5-902e-418c-8b8f-3e66fb6c54d4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "BackwardAutoPlay",
+                    "type": "Button",
+                    "id": "e5705bac-3061-4631-81a8-f7c4de9f750f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PlayNextGeneration",
+                    "type": "Button",
+                    "id": "d6e71bc1-389b-4bc7-bea0-355d5d5d54c5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PlayPrevGeneration",
+                    "type": "Button",
+                    "id": "f9c8f2bd-379a-4dc4-92ba-c7a615d7bc45",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -196,6 +232,50 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Follow",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "177f7731-b8b8-4a99-ab0f-a9d7953ad574",
+                    "path": "<Keyboard>/j",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "PlayNextGeneration",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1dbaf9fc-e629-48b6-bf8b-401a6bf02799",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AutoPlay",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c200d4e7-86bf-4975-a570-74e7f562fa04",
+                    "path": "<Keyboard>/h",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "PlayPrevGeneration",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5a2d083b-cd3d-46d7-9489-a949aa19454a",
+                    "path": "<Keyboard>/g",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "BackwardAutoPlay",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
