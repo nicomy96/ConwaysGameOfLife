@@ -3,18 +3,23 @@ using GameOfLife.Grid;
 using UnityEngine.InputSystem;
 using System.ComponentModel.Design.Serialization;
 using Unity.VisualScripting.Dependencies.NCalc;
+using UnityEngine.UI;
 
 namespace GameOfLife.Control
 {
     public class Controller : MonoBehaviour
     {
+        [SerializeField] float playSpeed;
         [SerializeField] float moveSpeed;
+        [SerializeField] Slider slider;
         InputManager inputManager;
         GridSpawner gridSpawner;
         GridManager gridManager;
         Animator animator;
         float fractionSpeed;
         bool isPlaying;
+        
+
 
         private void Awake()
         {
@@ -45,7 +50,7 @@ namespace GameOfLife.Control
 
         private void Move()
         {
-            Vector3 direction = inputManager.Player.Move.ReadValue<Vector3>();
+            Vector3 direction = inputManager.Player.Move.ReadValue<Vector2>();
             if (direction == Vector3.zero) return;
             direction = transform.position + (fractionSpeed * Time.deltaTime * direction);
             direction.x = Mathf.Clamp(direction.x, gridSpawner.BottomLeft.x, gridSpawner.TopRight.x);
@@ -67,11 +72,13 @@ namespace GameOfLife.Control
 
         private void PlayNextGeneration(InputAction.CallbackContext context)
         {
+            if (isPlaying) gridManager.StopPlaying();
             gridManager.CalculateNextGeneration();
         }
 
         private void PlayPreviousGeneration(InputAction.CallbackContext context)
         {
+            if (isPlaying) gridManager.StopPlaying();
             gridManager.ReturnPreviousGeneration();
         }
         private void AutoPlayForward(InputAction.CallbackContext context)
@@ -85,22 +92,20 @@ namespace GameOfLife.Control
                 gridManager.StopPlaying();
             }
             isPlaying = !isPlaying;
+        }
 
+        public void PauseGame()
+        {
+            if (!isPlaying) return;
+            gridManager.StopPlaying();
+            isPlaying = !isPlaying;
         }
         private void BackwardAutoPlay(InputAction.CallbackContext context)
         {
-            if (!isPlaying)
-            {
-                gridManager.PlayBackward();
-            }
-            else
-            {
-                gridManager.StopPlaying();
-                gridManager.PlayBackward();
-            }
-            
+            if(isPlaying) gridManager.StopPlaying();
+           
+            gridManager.PlayBackward();
             isPlaying = !isPlaying;
-
         }
         private void SetStartPosition()
         {
@@ -116,5 +121,9 @@ namespace GameOfLife.Control
             inputManager.Player.BackwardAutoPlay.performed -= BackwardAutoPlay;
         }
 
+        public void UpdateSpeed()
+        {
+            gridManager.SetDelayNextGeneration(playSpeed - slider.value);
+        }
     }
 }

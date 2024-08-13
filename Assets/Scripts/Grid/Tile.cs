@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 namespace GameOfLife.Grid
 {
@@ -10,8 +11,6 @@ namespace GameOfLife.Grid
         [SerializeField] Color aliveColor = Color.black;
         [SerializeField] Color dethColor = Color.white;
         [SerializeField] Color hoverColor = Color.gray;
-
-        TextMeshProUGUI positionText;
         SpriteRenderer spriteRenderer;
 
         public event Action<int> OnStateChange;
@@ -44,7 +43,6 @@ namespace GameOfLife.Grid
         void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
-            positionText = FindObjectOfType<TextMeshProUGUI>();
         }
 
         private void Start()
@@ -65,9 +63,12 @@ namespace GameOfLife.Grid
 
         private void OnMouseDown()
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
             ChangeState();
             OnManualStateChange();
-            positionText.text = id.ToString();
         }
 
         public void ChangeState()

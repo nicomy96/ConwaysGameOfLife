@@ -4,13 +4,14 @@ using System.Collections;
 using UnityEditorInternal;
 using UnityEngine;
 using System;
+using TMPro;
 
 namespace GameOfLife.Grid
 {
     public class GridManager : MonoBehaviour
     {
 
-        [SerializeField] float delayNextGeneration;
+        [SerializeField] TextMeshProUGUI generation;
         public readonly int width = 160;
         public readonly int height = 90;
         public readonly float tileSize = 1f;
@@ -20,11 +21,13 @@ namespace GameOfLife.Grid
         List<int> changes = new List<int>();
         Stack<List<int>> history = new Stack<List<int>>();
         int currentGeneration;
-        
+        float delayNextGeneration;
+
 
         private void Start()
         {
             currentGeneration = 0;
+            delayNextGeneration = 0.5f;
         }
         public List<Tile> Grid
         {
@@ -46,7 +49,7 @@ namespace GameOfLife.Grid
         private void RestartHistory()
         {
             history.Clear();
-            currentGeneration = 0;
+            SetCurrentGeneration(0);
         }
         public void SubscribeToTiles()
         {
@@ -63,16 +66,17 @@ namespace GameOfLife.Grid
                 CheckNeighbors(tile, true);
             }
             ApplyCurrentChanges();
-            currentGeneration++;
+            SetCurrentGeneration(currentGeneration + 1);
         }
 
         public void ReturnPreviousGeneration()
         {
+            print("Return previous generation");
             if(history.Count > 0)
             {
                 ApplyChanges(history.Pop());
                 changes.Clear();
-                currentGeneration--;
+                SetCurrentGeneration(currentGeneration - 1);
             }
         }
 
@@ -158,11 +162,19 @@ namespace GameOfLife.Grid
         {   
             while (history.Count > 0)
             {
-                print(history.Count);
                 ReturnPreviousGeneration();
-                print(history.Count);
                 yield return new WaitForSeconds(delayNextGeneration);
             }
+        }
+
+        private void SetCurrentGeneration(int newGeneration)
+        {
+            currentGeneration = newGeneration;
+            generation.text = $"Generation: {currentGeneration}";
+        }
+        public void SetDelayNextGeneration(float newDelay)
+        {
+            delayNextGeneration = newDelay;
         }
     }
 }
