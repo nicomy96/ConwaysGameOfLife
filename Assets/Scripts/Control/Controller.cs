@@ -13,6 +13,7 @@ namespace GameOfLife.Control
         [SerializeField] float moveSpeed;
         [SerializeField] Slider slider;
         InputManager inputManager;
+        InputManager.PlayerActions playerInput;
         GridSpawner gridSpawner;
         GridManager gridManager;
         Animator animator;
@@ -24,18 +25,21 @@ namespace GameOfLife.Control
         private void Awake()
         {
             inputManager = new();
+            playerInput = inputManager.Player;
             gridSpawner = FindObjectOfType<GridSpawner>();
             gridManager = FindObjectOfType<GridManager>();
             animator = GetComponent<Animator>();
         }
         private void OnEnable()
         {
-            inputManager.Player.Enable();
-            inputManager.Player.Zoom.performed += Zoom;
-            inputManager.Player.PlayNextGeneration.performed += PlayNextGeneration;
-            inputManager.Player.PlayPrevGeneration.performed += PlayPreviousGeneration;
-            inputManager.Player.AutoPlay.performed += AutoPlayForward;
-            inputManager.Player.BackwardAutoPlay.performed += BackwardAutoPlay;
+            playerInput.Enable();
+            playerInput.Zoom.performed += Zoom;
+            playerInput.PlayNextGeneration.performed += PlayNextGeneration;
+            playerInput.PlayPrevGeneration.performed += PlayPreviousGeneration;
+            playerInput.AutoPlay.performed += AutoPlayForward;
+            playerInput.BackwardAutoPlay.performed += BackwardAutoPlay;
+            playerInput.RandomGeneration.performed += RandomGeneration;
+            playerInput.Clear.performed += ClearGrid; 
         }
         private void Start()
         {
@@ -70,16 +74,26 @@ namespace GameOfLife.Control
             animator.SetInteger("CameraIndex", currentCameraIndex);
         }
 
+        private void ClearGrid(InputAction.CallbackContext context)
+        {
+            PauseGame();
+            gridManager.ClearGrid();
+        }
         private void PlayNextGeneration(InputAction.CallbackContext context)
         {
-            if (isPlaying) gridManager.StopPlaying();
+            PauseGame();
             gridManager.CalculateNextGeneration();
         }
 
         private void PlayPreviousGeneration(InputAction.CallbackContext context)
         {
-            if (isPlaying) gridManager.StopPlaying();
+            PauseGame();
             gridManager.ReturnPreviousGeneration();
+        }
+        private void RandomGeneration(InputAction.CallbackContext context)
+        {
+            PauseGame();
+            gridManager.RandomGeneration();
         }
         private void AutoPlayForward(InputAction.CallbackContext context)
         {
@@ -98,32 +112,33 @@ namespace GameOfLife.Control
         {
             if (!isPlaying) return;
             gridManager.StopPlaying();
-            isPlaying = !isPlaying;
+            isPlaying = false;
         }
         private void BackwardAutoPlay(InputAction.CallbackContext context)
         {
-            if(isPlaying) gridManager.StopPlaying();
-           
+            PauseGame();
             gridManager.PlayBackward();
-            isPlaying = !isPlaying;
+            isPlaying = true;
         }
         private void SetStartPosition()
         {
             transform.position = gridSpawner.GetGridCenter();
         }
-
-        private void OnDisable()
-        {
-            inputManager.Player.Zoom.performed -= Zoom;
-            inputManager.Player.PlayNextGeneration.performed -= PlayNextGeneration;
-            inputManager.Player.PlayPrevGeneration.performed -= PlayPreviousGeneration;
-            inputManager.Player.AutoPlay.performed -= AutoPlayForward;
-            inputManager.Player.BackwardAutoPlay.performed -= BackwardAutoPlay;
-        }
-
         public void UpdateSpeed()
         {
             gridManager.SetDelayNextGeneration(playSpeed - slider.value);
         }
+
+        private void OnDisable()
+        {
+            playerInput.Zoom.performed -= Zoom;
+            playerInput.PlayNextGeneration.performed -= PlayNextGeneration;
+            playerInput.PlayPrevGeneration.performed -= PlayPreviousGeneration;
+            playerInput.AutoPlay.performed += AutoPlayForward;
+            playerInput.BackwardAutoPlay.performed -= BackwardAutoPlay;
+            playerInput.RandomGeneration.performed -= RandomGeneration;
+            playerInput.Clear.performed -= ClearGrid;
+            playerInput.Disable();
+        } 
     }
 }
