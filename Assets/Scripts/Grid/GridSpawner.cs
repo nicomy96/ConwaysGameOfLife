@@ -123,7 +123,7 @@ namespace GameOfLife.Grid
         }
         private bool HasRightNeighbor(int id)
         {
-            if (id > (gridManager.height * (gridManager.width-1))) return false;
+            if (id >= (gridManager.height * (gridManager.width-1))) return false;
             return true;
         }
     }

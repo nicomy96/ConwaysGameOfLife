@@ -16,7 +16,7 @@ namespace GameOfLife.Grid
         public event Action<int> OnStateChange;
         public event Action OnManualStateChange;
 
-        List<int> neighbors = new List<int>();
+        List<int> neighbors = new();
         Color currentColor;
         bool isAlive;
         int id = -1;
@@ -43,6 +43,7 @@ namespace GameOfLife.Grid
         void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
+            
         }
 
         private void Start()

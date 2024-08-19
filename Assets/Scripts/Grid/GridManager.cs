@@ -1,10 +1,9 @@
-using Cinemachine;
 using System.Collections.Generic;
 using System.Collections;
-using UnityEditorInternal;
 using UnityEngine;
-using System;
+//using System;
 using TMPro;
+using System.Linq;
 
 namespace GameOfLife.Grid
 {
@@ -16,10 +15,10 @@ namespace GameOfLife.Grid
         public readonly int height = 90;
         public readonly float tileSize = 1f;
 
-        List<Tile> grid = new List<Tile>();
-        HashSet<int> aliveTiles = new HashSet<int>();
-        List<int> changes = new List<int>();
-        Stack<List<int>> history = new Stack<List<int>>();
+        List<Tile> grid = new();
+        HashSet<int> aliveTiles = new();
+        List<int> changes = new();
+        Stack<List<int>> history = new();
         int currentGeneration;
         float delayNextGeneration;
 
@@ -48,7 +47,9 @@ namespace GameOfLife.Grid
 
         private void RestartHistory()
         {
+            if (currentGeneration == 0) return;
             history.Clear();
+            changes.Clear();
             SetCurrentGeneration(0);
         }
         public void SubscribeToTiles()
@@ -69,9 +70,31 @@ namespace GameOfLife.Grid
             SetCurrentGeneration(currentGeneration + 1);
         }
 
+        public void RandomGeneration()
+        {
+            RestartHistory();
+            int numberOfLiveCells = Random.Range(grid.Count / 4, grid.Count);
+            for (int i = 0; i < numberOfLiveCells; i++)
+            {
+                changes.Add(Random.Range(0, grid.Count - 1));
+            }
+            ApplyChanges(changes);
+        }
+
+        public void ClearGrid()
+        {
+            RestartHistory();
+            changes = new List<int>(aliveTiles);
+            aliveTiles.Clear();
+            foreach (int aliveTile in changes)
+            {
+                grid[aliveTile].ChangeState();
+            }
+            changes.Clear();
+        }
+
         public void ReturnPreviousGeneration()
         {
-            print("Return previous generation");
             if(history.Count > 0)
             {
                 ApplyChanges(history.Pop());
@@ -116,7 +139,6 @@ namespace GameOfLife.Grid
         {
             history.Push(new List<int>(changes));
             ApplyChanges(changes);
-            changes.Clear();
         }
 
         private void ApplyChanges(List<int> changesToApply)
@@ -125,14 +147,7 @@ namespace GameOfLife.Grid
             {
                 grid[indexTile].ChangeState();
             }
-        }
-
-        private void OnDisable()
-        {
-            foreach (Tile tile in grid)
-            {
-                tile.OnStateChange -= SaveAliveTiles;
-            }
+            changes.Clear();
         }
 
         public void PlayForward()
@@ -175,6 +190,15 @@ namespace GameOfLife.Grid
         public void SetDelayNextGeneration(float newDelay)
         {
             delayNextGeneration = newDelay;
+        }
+
+        private void OnDisable()
+        {
+            foreach (Tile tile in grid)
+            {
+                tile.OnStateChange -= SaveAliveTiles;
+                tile.OnManualStateChange -= RestartHistory;
+            }
         }
     }
 }

@@ -48,15 +48,6 @@ namespace GameOfLife.Control
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Follow"",
-                    ""type"": ""Value"",
-                    ""id"": ""4f5c1d7d-834d-4bde-bc43-7318e894bc03"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
                     ""name"": ""AutoPlay"",
                     ""type"": ""Button"",
                     ""id"": ""39e388d5-902e-418c-8b8f-3e66fb6c54d4"",
@@ -87,6 +78,24 @@ namespace GameOfLife.Control
                     ""name"": ""PlayPrevGeneration"",
                     ""type"": ""Button"",
                     ""id"": ""f9c8f2bd-379a-4dc4-92ba-c7a615d7bc45"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RandomGeneration"",
+                    ""type"": ""Button"",
+                    ""id"": ""a0a6b35e-96f0-47a9-906f-c6cef0271498"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Clear"",
+                    ""type"": ""Button"",
+                    ""id"": ""6e6f6375-d5e3-42b1-9ad4-85fd8f817fb1"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -283,17 +292,6 @@ namespace GameOfLife.Control
                 },
                 {
                     ""name"": """",
-                    ""id"": ""13d99bf7-d0ad-4166-bb43-94c8bb9c9fc5"",
-                    ""path"": ""<Mouse>/position"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Follow"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""177f7731-b8b8-4a99-ab0f-a9d7953ad574"",
                     ""path"": ""<Keyboard>/j"",
                     ""interactions"": """",
@@ -333,6 +331,28 @@ namespace GameOfLife.Control
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""BackwardAutoPlay"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e51cd069-e38c-4b70-be94-d5bc888b49b8"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""RandomGeneration"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6219b293-b4ac-4f12-8b5c-6826773360ac"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Clear"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -922,11 +942,12 @@ namespace GameOfLife.Control
             m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
             m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
             m_Player_Zoom = m_Player.FindAction("Zoom", throwIfNotFound: true);
-            m_Player_Follow = m_Player.FindAction("Follow", throwIfNotFound: true);
             m_Player_AutoPlay = m_Player.FindAction("AutoPlay", throwIfNotFound: true);
             m_Player_BackwardAutoPlay = m_Player.FindAction("BackwardAutoPlay", throwIfNotFound: true);
             m_Player_PlayNextGeneration = m_Player.FindAction("PlayNextGeneration", throwIfNotFound: true);
             m_Player_PlayPrevGeneration = m_Player.FindAction("PlayPrevGeneration", throwIfNotFound: true);
+            m_Player_RandomGeneration = m_Player.FindAction("RandomGeneration", throwIfNotFound: true);
+            m_Player_Clear = m_Player.FindAction("Clear", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1002,22 +1023,24 @@ namespace GameOfLife.Control
         private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
         private readonly InputAction m_Player_Move;
         private readonly InputAction m_Player_Zoom;
-        private readonly InputAction m_Player_Follow;
         private readonly InputAction m_Player_AutoPlay;
         private readonly InputAction m_Player_BackwardAutoPlay;
         private readonly InputAction m_Player_PlayNextGeneration;
         private readonly InputAction m_Player_PlayPrevGeneration;
+        private readonly InputAction m_Player_RandomGeneration;
+        private readonly InputAction m_Player_Clear;
         public struct PlayerActions
         {
             private @InputManager m_Wrapper;
             public PlayerActions(@InputManager wrapper) { m_Wrapper = wrapper; }
             public InputAction @Move => m_Wrapper.m_Player_Move;
             public InputAction @Zoom => m_Wrapper.m_Player_Zoom;
-            public InputAction @Follow => m_Wrapper.m_Player_Follow;
             public InputAction @AutoPlay => m_Wrapper.m_Player_AutoPlay;
             public InputAction @BackwardAutoPlay => m_Wrapper.m_Player_BackwardAutoPlay;
             public InputAction @PlayNextGeneration => m_Wrapper.m_Player_PlayNextGeneration;
             public InputAction @PlayPrevGeneration => m_Wrapper.m_Player_PlayPrevGeneration;
+            public InputAction @RandomGeneration => m_Wrapper.m_Player_RandomGeneration;
+            public InputAction @Clear => m_Wrapper.m_Player_Clear;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -1033,9 +1056,6 @@ namespace GameOfLife.Control
                 @Zoom.started += instance.OnZoom;
                 @Zoom.performed += instance.OnZoom;
                 @Zoom.canceled += instance.OnZoom;
-                @Follow.started += instance.OnFollow;
-                @Follow.performed += instance.OnFollow;
-                @Follow.canceled += instance.OnFollow;
                 @AutoPlay.started += instance.OnAutoPlay;
                 @AutoPlay.performed += instance.OnAutoPlay;
                 @AutoPlay.canceled += instance.OnAutoPlay;
@@ -1048,6 +1068,12 @@ namespace GameOfLife.Control
                 @PlayPrevGeneration.started += instance.OnPlayPrevGeneration;
                 @PlayPrevGeneration.performed += instance.OnPlayPrevGeneration;
                 @PlayPrevGeneration.canceled += instance.OnPlayPrevGeneration;
+                @RandomGeneration.started += instance.OnRandomGeneration;
+                @RandomGeneration.performed += instance.OnRandomGeneration;
+                @RandomGeneration.canceled += instance.OnRandomGeneration;
+                @Clear.started += instance.OnClear;
+                @Clear.performed += instance.OnClear;
+                @Clear.canceled += instance.OnClear;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -1058,9 +1084,6 @@ namespace GameOfLife.Control
                 @Zoom.started -= instance.OnZoom;
                 @Zoom.performed -= instance.OnZoom;
                 @Zoom.canceled -= instance.OnZoom;
-                @Follow.started -= instance.OnFollow;
-                @Follow.performed -= instance.OnFollow;
-                @Follow.canceled -= instance.OnFollow;
                 @AutoPlay.started -= instance.OnAutoPlay;
                 @AutoPlay.performed -= instance.OnAutoPlay;
                 @AutoPlay.canceled -= instance.OnAutoPlay;
@@ -1073,6 +1096,12 @@ namespace GameOfLife.Control
                 @PlayPrevGeneration.started -= instance.OnPlayPrevGeneration;
                 @PlayPrevGeneration.performed -= instance.OnPlayPrevGeneration;
                 @PlayPrevGeneration.canceled -= instance.OnPlayPrevGeneration;
+                @RandomGeneration.started -= instance.OnRandomGeneration;
+                @RandomGeneration.performed -= instance.OnRandomGeneration;
+                @RandomGeneration.canceled -= instance.OnRandomGeneration;
+                @Clear.started -= instance.OnClear;
+                @Clear.performed -= instance.OnClear;
+                @Clear.canceled -= instance.OnClear;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -1257,11 +1286,12 @@ namespace GameOfLife.Control
         {
             void OnMove(InputAction.CallbackContext context);
             void OnZoom(InputAction.CallbackContext context);
-            void OnFollow(InputAction.CallbackContext context);
             void OnAutoPlay(InputAction.CallbackContext context);
             void OnBackwardAutoPlay(InputAction.CallbackContext context);
             void OnPlayNextGeneration(InputAction.CallbackContext context);
             void OnPlayPrevGeneration(InputAction.CallbackContext context);
+            void OnRandomGeneration(InputAction.CallbackContext context);
+            void OnClear(InputAction.CallbackContext context);
         }
         public interface IUIActions
         {
