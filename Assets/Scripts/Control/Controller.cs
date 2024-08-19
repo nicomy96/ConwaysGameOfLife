@@ -19,8 +19,6 @@ namespace GameOfLife.Control
         Animator animator;
         float fractionSpeed;
         bool isPlaying;
-        
-
 
         private void Awake()
         {
