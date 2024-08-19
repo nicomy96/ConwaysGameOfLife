@@ -34,7 +34,7 @@ namespace GameOfLife.Control
             playerInput.Zoom.performed += Zoom;
             playerInput.PlayNextGeneration.performed += PlayNextGeneration;
             playerInput.PlayPrevGeneration.performed += PlayPreviousGeneration;
-            playerInput.AutoPlay.performed += AutoPlayForward;
+            playerInput.AutoPlay.performed += ForwardAutoPlay;
             playerInput.BackwardAutoPlay.performed += BackwardAutoPlay;
             playerInput.RandomGeneration.performed += RandomGeneration;
             playerInput.Clear.performed += ClearGrid; 
@@ -93,7 +93,7 @@ namespace GameOfLife.Control
             PauseGame();
             gridManager.RandomGeneration();
         }
-        private void AutoPlayForward(InputAction.CallbackContext context)
+        private void ForwardAutoPlay(InputAction.CallbackContext context)
         {
             if (!isPlaying)
             {
@@ -111,6 +111,12 @@ namespace GameOfLife.Control
             if (!isPlaying) return;
             gridManager.StopPlaying();
             isPlaying = false;
+        }
+        public void PlayForward()
+        {
+            PauseGame();
+            gridManager.PlayForward();
+            isPlaying = true;
         }
         private void BackwardAutoPlay(InputAction.CallbackContext context)
         {
@@ -132,7 +138,7 @@ namespace GameOfLife.Control
             playerInput.Zoom.performed -= Zoom;
             playerInput.PlayNextGeneration.performed -= PlayNextGeneration;
             playerInput.PlayPrevGeneration.performed -= PlayPreviousGeneration;
-            playerInput.AutoPlay.performed += AutoPlayForward;
+            playerInput.AutoPlay.performed += ForwardAutoPlay;
             playerInput.BackwardAutoPlay.performed -= BackwardAutoPlay;
             playerInput.RandomGeneration.performed -= RandomGeneration;
             playerInput.Clear.performed -= ClearGrid;
