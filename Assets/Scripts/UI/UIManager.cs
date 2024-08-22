@@ -15,8 +15,8 @@ namespace GameOfLife.UI
         private void Start()
         {
             showControls = false;
-            Scene activeScene = SceneManager.GetActiveScene();
-            if (activeScene.buildIndex != 1)
+            int activeScene = SceneManager.GetActiveScene().buildIndex;
+            if (activeScene != 1)
             {
                 gameScene = SceneManager.LoadSceneAsync(1);
                 gameScene.allowSceneActivation = false;
@@ -33,11 +33,6 @@ namespace GameOfLife.UI
             gameScene.allowSceneActivation = true;
         }
 
-        public void LoadControlsScene()
-        {
-            SceneManager.LoadScene(2);
-        }
-
         public void DisplayControlsCanvas()
         {
             showControls = !showControls;
@@ -47,6 +42,11 @@ namespace GameOfLife.UI
         public void LoadMainScene()
         {
             SceneManager.LoadScene(0);
+        }
+
+        public void QuitApplication()
+        {
+            Application.Quit();
         }
     }
 }
