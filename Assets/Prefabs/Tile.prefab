@@ -121,4 +121,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   aliveColor: {r: 0, g: 0, b: 0, a: 1}
   dethColor: {r: 1, g: 1, b: 1, a: 1}
-  hoverColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hoverColorActive: {r: 0.6415094, g: 0.6203275, b: 0.6203275, a: 1}
+  hoverColorInactive: {r: 0.8301887, g: 0.8262727, b: 0.8262727, a: 1}

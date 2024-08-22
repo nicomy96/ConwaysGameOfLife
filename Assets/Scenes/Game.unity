@@ -3097,6 +3097,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   generation: {fileID: 1926536705}
+  defaultPattern: {fileID: 11400000, guid: 024825ce21dba6947b437e2bd9ce7fe9, type: 2}
 --- !u!114 &1550396388
 MonoBehaviour:
   m_ObjectHideFlags: 0

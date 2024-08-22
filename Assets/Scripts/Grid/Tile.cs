@@ -10,10 +10,13 @@ namespace GameOfLife.Grid
     {
         [SerializeField] Color aliveColor = Color.black;
         [SerializeField] Color dethColor = Color.white;
-        [SerializeField] Color hoverColor = Color.gray;
+        [SerializeField] Color hoverColorActive = Color.gray;
+        [SerializeField] Color hoverColorInactive = Color.white;
         SpriteRenderer spriteRenderer;
 
         public event Action<int> OnStateChange;
+        public event Action<int> OnHover;
+        public event Action OnHoverExit;
         public event Action OnManualStateChange;
 
         List<int> neighbors = new();
@@ -54,12 +57,12 @@ namespace GameOfLife.Grid
 
         private void OnMouseEnter()
         {
-            spriteRenderer.color = hoverColor;
+            OnHover(id);
         }
 
         private void OnMouseExit()
         {
-            spriteRenderer.color = currentColor;
+            OnHoverExit();
         }
 
         private void OnMouseDown()
@@ -68,7 +71,6 @@ namespace GameOfLife.Grid
             {
                 return;
             }
-            ChangeState();
             OnManualStateChange();
         }
 
@@ -83,6 +85,16 @@ namespace GameOfLife.Grid
         public bool IsAlive()
         {
             return isAlive;
+        }
+
+        public void ChangeToHoverColor(bool active)
+        {
+            spriteRenderer.color = active? hoverColorActive : hoverColorInactive;
+        }
+
+        public void ChangeToCurrentColor()
+        {
+            spriteRenderer.color = currentColor; ;
         }
     }
 }
