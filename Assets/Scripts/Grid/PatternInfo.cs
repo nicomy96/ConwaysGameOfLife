@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 [CreateAssetMenu(fileName ="Pattern", menuName = "Grid/Pattern")]
-public class Pattern : ScriptableObject
+public class PatternInfo : ScriptableObject
 {
+    [SerializeField] Sprite patternImage;
     [SerializeField] int height;
     [SerializeField] int width;
     [SerializeField] List<bool> activeTiles;
@@ -26,6 +27,11 @@ public class Pattern : ScriptableObject
             if (value >= height * width || value < 0) return;
             pivotIndex = value;
         }
+    }
+
+    public Sprite GetSprite()
+    {
+        return patternImage;
     }
 
     public bool IsAWellDefinedPattern()

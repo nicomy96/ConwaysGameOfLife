@@ -7,14 +7,17 @@ namespace GameOfLife.UI
 {
     public class UIManager : MonoBehaviour
     {
-        [SerializeField] GameObject controlCanvas;
+        [SerializeField] GameObject controlsCanvas;
+        [SerializeField] GameObject patternsCanvas;
         [SerializeField] GameObject[] startObjects;
         [SerializeField] GameObject loading;
         AsyncOperation gameScene;
         bool showControls;
+        bool showPatterns;
         private void Start()
         {
             showControls = false;
+            showPatterns = false;
             int activeScene = SceneManager.GetActiveScene().buildIndex;
             if (activeScene != 1)
             {
@@ -36,7 +39,12 @@ namespace GameOfLife.UI
         public void DisplayControlsCanvas()
         {
             showControls = !showControls;
-            controlCanvas.SetActive(showControls);
+            controlsCanvas.SetActive(showControls);
+        }
+        public void DisplayPatternsCanvas()
+        {
+            showPatterns = !showPatterns;
+            patternsCanvas.SetActive(showPatterns);
         }
 
         public void LoadMainScene()

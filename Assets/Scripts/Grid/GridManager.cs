@@ -11,13 +11,13 @@ namespace GameOfLife.Grid
     {
 
         [SerializeField] TextMeshProUGUI generation;
-        [SerializeField] Pattern defaultPattern;
+        [SerializeField] PatternInfo defaultPattern;
        
         public readonly int width = 160;
         public readonly int height = 90;
         public readonly float tileSize = 1f;
 
-        Pattern currentPattern;
+        PatternInfo currentPattern;
         List<Tile> grid = new();
         HashSet<int> aliveTiles = new();
         List<int> changes = new();
@@ -172,6 +172,7 @@ namespace GameOfLife.Grid
         {
             StopAllCoroutines();
         }
+
         IEnumerator PlayForwardCoroutine()
         {
             while (aliveTiles.Count > 0)
@@ -200,6 +201,16 @@ namespace GameOfLife.Grid
             delayNextGeneration = newDelay;
         }
 
+
+        public void SetCurrentPattern(PatternInfo patternInfo)
+        {
+            currentPattern = patternInfo;
+        }
+
+        public void SetToDeafultPattern()
+        {
+            currentPattern = defaultPattern;
+        }
         private void DrawPatternShadow(int tileIndex)
         {
             DefinePivotToDraw(tileIndex);
