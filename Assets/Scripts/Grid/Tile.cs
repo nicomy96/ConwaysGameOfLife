@@ -57,6 +57,10 @@ namespace GameOfLife.Grid
 
         private void OnMouseEnter()
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
             OnHover(id);
         }
 

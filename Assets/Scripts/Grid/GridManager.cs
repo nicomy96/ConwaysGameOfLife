@@ -204,13 +204,12 @@ namespace GameOfLife.Grid
 
         public void SetCurrentPattern(PatternInfo patternInfo)
         {
-            currentPattern = patternInfo;
+            if(patternInfo.IsAWellDefinedPattern())
+            {
+                currentPattern = patternInfo;
+            }
         }
 
-        public void SetToDeafultPattern()
-        {
-            currentPattern = defaultPattern;
-        }
         private void DrawPatternShadow(int tileIndex)
         {
             DefinePivotToDraw(tileIndex);

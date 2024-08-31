@@ -4,9 +4,11 @@ using UnityEngine;
 public class PatternInfo : ScriptableObject
 {
     [SerializeField] Sprite patternImage;
+    [SerializeField] string name;
     [SerializeField] int height;
     [SerializeField] int width;
     [SerializeField] List<bool> activeTiles;
+    
     int pivotIndex = 0;
 
     public int Height
@@ -32,6 +34,14 @@ public class PatternInfo : ScriptableObject
     public Sprite GetSprite()
     {
         return patternImage;
+    }
+
+    public string Name
+    {
+        get
+        {
+            return name;
+        }
     }
 
     public bool IsAWellDefinedPattern()
