@@ -37,7 +37,8 @@ namespace GameOfLife.Control
             playerInput.AutoPlay.performed += ForwardAutoPlay;
             playerInput.BackwardAutoPlay.performed += BackwardAutoPlay;
             playerInput.RandomGeneration.performed += RandomGeneration;
-            playerInput.Clear.performed += ClearGrid; 
+            playerInput.Clear.performed += ClearGrid;
+            playerInput.SetPatternAsDefault.performed += SetPatternAsDefault;
         }
         private void Start()
         {
@@ -132,7 +133,10 @@ namespace GameOfLife.Control
         {
             gridManager.SetDelayNextGeneration(playSpeed - slider.value);
         }
-
+        private void SetPatternAsDefault(InputAction.CallbackContext context)
+        {
+            gridManager.SetPatternAsDefault();
+        }
         private void OnDisable()
         {
             playerInput.Zoom.performed -= Zoom;
@@ -142,6 +146,7 @@ namespace GameOfLife.Control
             playerInput.BackwardAutoPlay.performed -= BackwardAutoPlay;
             playerInput.RandomGeneration.performed -= RandomGeneration;
             playerInput.Clear.performed -= ClearGrid;
+            playerInput.SetPatternAsDefault.performed += SetPatternAsDefault;
             playerInput.Disable();
         } 
     }
