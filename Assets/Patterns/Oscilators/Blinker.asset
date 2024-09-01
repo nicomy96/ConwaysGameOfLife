@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Blinker
   m_EditorClassIdentifier: 
   patternImage: {fileID: 21300000, guid: 25434fac085c3754eb9293a5d7878c65, type: 3}
-  name: 
+  name: Blinker
+  moreInfo: 'Period: 2'
   height: 1
   width: 3
   activeTiles: 010101

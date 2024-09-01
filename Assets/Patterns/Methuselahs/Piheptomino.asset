@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6e2636966f517a49b32a65abd045bf1, type: 3}
-  m_Name: Toad
+  m_Name: Piheptomino
   m_EditorClassIdentifier: 
-  patternImage: {fileID: 21300000, guid: cf092758fc535994b891484f51095816, type: 3}
-  name: Toad
-  moreInfo: 'Period: 2'
-  height: 2
-  width: 4
-  activeTiles: 0001010101010100
+  patternImage: {fileID: 21300000, guid: ee88953ac1912e5488243e82aedfd53b, type: 3}
+  name: Piheptomino
+  moreInfo: 'Lifespan: 173'
+  height: 3
+  width: 3
+  activeTiles: 010101010001010001

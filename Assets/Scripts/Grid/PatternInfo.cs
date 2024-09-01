@@ -5,6 +5,7 @@ public class PatternInfo : ScriptableObject
 {
     [SerializeField] Sprite patternImage;
     [SerializeField] string name;
+    [SerializeField] string moreInfo;
     [SerializeField] int height;
     [SerializeField] int width;
     [SerializeField] List<bool> activeTiles;
@@ -40,7 +41,9 @@ public class PatternInfo : ScriptableObject
     {
         get
         {
-            return name;
+            if (moreInfo == null)
+                return name;
+            return name + "\n" + moreInfo;
         }
     }
 

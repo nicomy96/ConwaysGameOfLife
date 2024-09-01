@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   patternImage: {fileID: 21300000, guid: 9532db1831bb16146bb942edca90c2de, type: 3}
   name: Acorn
+  moreInfo: 'Lifespan: 5206'
   height: 3
   width: 7
   activeTiles: 000100000000000000000100000001010000010101

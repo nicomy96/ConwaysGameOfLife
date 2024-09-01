@@ -210,6 +210,12 @@ namespace GameOfLife.Grid
             }
         }
 
+        public void SetPatternAsDefault()
+        {
+            ErasePatternShadow();
+            currentPattern = defaultPattern;
+        }
+
         private void DrawPatternShadow(int tileIndex)
         {
             DefinePivotToDraw(tileIndex);

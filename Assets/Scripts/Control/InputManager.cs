@@ -100,6 +100,15 @@ namespace GameOfLife.Control
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SetPatternAsDefault"",
+                    ""type"": ""Button"",
+                    ""id"": ""16cf14b4-dad4-4a77-b3ee-bcd80925f886"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -353,6 +362,17 @@ namespace GameOfLife.Control
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Clear"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c17c2b0a-8460-44b5-862b-d7409733fd1e"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SetPatternAsDefault"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -948,6 +968,7 @@ namespace GameOfLife.Control
             m_Player_PlayPrevGeneration = m_Player.FindAction("PlayPrevGeneration", throwIfNotFound: true);
             m_Player_RandomGeneration = m_Player.FindAction("RandomGeneration", throwIfNotFound: true);
             m_Player_Clear = m_Player.FindAction("Clear", throwIfNotFound: true);
+            m_Player_SetPatternAsDefault = m_Player.FindAction("SetPatternAsDefault", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1029,6 +1050,7 @@ namespace GameOfLife.Control
         private readonly InputAction m_Player_PlayPrevGeneration;
         private readonly InputAction m_Player_RandomGeneration;
         private readonly InputAction m_Player_Clear;
+        private readonly InputAction m_Player_SetPatternAsDefault;
         public struct PlayerActions
         {
             private @InputManager m_Wrapper;
@@ -1041,6 +1063,7 @@ namespace GameOfLife.Control
             public InputAction @PlayPrevGeneration => m_Wrapper.m_Player_PlayPrevGeneration;
             public InputAction @RandomGeneration => m_Wrapper.m_Player_RandomGeneration;
             public InputAction @Clear => m_Wrapper.m_Player_Clear;
+            public InputAction @SetPatternAsDefault => m_Wrapper.m_Player_SetPatternAsDefault;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -1074,6 +1097,9 @@ namespace GameOfLife.Control
                 @Clear.started += instance.OnClear;
                 @Clear.performed += instance.OnClear;
                 @Clear.canceled += instance.OnClear;
+                @SetPatternAsDefault.started += instance.OnSetPatternAsDefault;
+                @SetPatternAsDefault.performed += instance.OnSetPatternAsDefault;
+                @SetPatternAsDefault.canceled += instance.OnSetPatternAsDefault;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -1102,6 +1128,9 @@ namespace GameOfLife.Control
                 @Clear.started -= instance.OnClear;
                 @Clear.performed -= instance.OnClear;
                 @Clear.canceled -= instance.OnClear;
+                @SetPatternAsDefault.started -= instance.OnSetPatternAsDefault;
+                @SetPatternAsDefault.performed -= instance.OnSetPatternAsDefault;
+                @SetPatternAsDefault.canceled -= instance.OnSetPatternAsDefault;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -1292,6 +1321,7 @@ namespace GameOfLife.Control
             void OnPlayPrevGeneration(InputAction.CallbackContext context);
             void OnRandomGeneration(InputAction.CallbackContext context);
             void OnClear(InputAction.CallbackContext context);
+            void OnSetPatternAsDefault(InputAction.CallbackContext context);
         }
         public interface IUIActions
         {
