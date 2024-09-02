@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using System.ComponentModel.Design.Serialization;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace GameOfLife.Control
 {
@@ -63,6 +64,10 @@ namespace GameOfLife.Control
 
         private void Zoom(InputAction.CallbackContext context)
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
             float indexChange = inputManager.Player.Zoom.ReadValue<float>();
             if (indexChange == 0) return;
             indexChange = Mathf.Abs(indexChange) / indexChange;
